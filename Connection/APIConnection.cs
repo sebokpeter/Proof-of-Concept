@@ -14,8 +14,8 @@ namespace PoC.Connection
         private readonly string address = "localhost";
         private readonly int port1 = 11000;
         private readonly int port2 = 12000;
-        private TcpClient commandSender;
-        private TcpClient listener;
+        private readonly TcpClient commandSender;
+        private readonly TcpClient listener;
         private WebSocket socket;
         private TaskCompletionSource<object> taskCompletitionSource;
 
