@@ -1,7 +1,12 @@
 ﻿
 // Everything here is in one place. This is definitely not ideal.
 
-const homeUri = "home/command?command="
+
+//const homeUri = "home/command?command="
+//const homeUri = "http://localhost/home/command"
+const homeUrl = window.location.href + "home/command";
+
+const disconnectUrl = "home/disconnect"
 
 var socket;
 
@@ -12,69 +17,62 @@ connectionUrl = scheme + "://" + document.location.hostname + port;
 
 var textArea = document.getElementById("plcData");
 
-function startClicked() {
-    const req = new Request(
-        homeUri + "start"
-    );
+window.onload = createSocket();
 
-    fetch(req).then(c => {
-        console.log("Success");
-    }).catch(e => {
-        console.log("Error: " + e)
-    })
+function startClicked() {
+    sendCommandToController("start");
 }
 
 function resetClicked() {
-    const req = new Request(
-        homeUri + "reset"
-    );
-
-    fetch(req).then(c => {
-        console.log("Success");
-    }).catch(e => {
-        console.log("Error: " + e)
-    })
+    sendCommandToController("reset");
 }
 
 function sasClicked() {
-    const req = new Request(
-        homeUri + "arriving"
-    );
-    fetch(req).then(c => {
-        console.log("Success");
-    }).catch(e => {
-        console.log("Error: " + e)
-    })
+    sendCommandToController("arriving");
 }
 
 function slsClicked() {
-    const req = new Request(
-        homeUri + "leaving"
-    );
-    fetch(req).then(c => {
-        console.log("Success");
-    }).catch(e => {
-        console.log("Error: " + e)
-    })
+    sendCommandToController("leaving");
 }
 
 function disconnectClicked() {
-    const req = new Request(
-        "home/disconnect"
-    );
+    sendDisconnectRequest();
+}
+
+function sendCommandToController(command) {
+    const params = new URLSearchParams();
+    params.append("command", command);
+
+    const url = new URL(homeUrl);
+    url.search = params;
+
+    const req = new Request(url);
+
+    console.log(params.toString());
+    console.log(req);
+
     fetch(req).then(c => {
         console.log("Success");
     }).catch(e => {
-        console.log("Error: " + e)
-    })
+        console.error(e);
+    });
 }
 
+function sendDisconnectRequest() {
+    const req = new Request(disconnectUrl);
+
+    fetch(req).then(r => {
+        console.log("Disconnected");
+    }).error(e => {
+        console.log(e);
+    });
+}
 
 function createSocket() {
     console.log("Creating socket")
     socket = new WebSocket(connectionUrl);
     socket.onmessage = function (event) {
-        console.log("Got data: " + event.data);
+        //console.log("Got data: " + event.data);
         // textArea.value += event.data + "\n"; // With this we can see each message
         textArea.value = event.data;
     }

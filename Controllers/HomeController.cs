@@ -27,7 +27,8 @@ namespace PoC.Controllers
 
         public void Command([FromQuery]string command)
         {
-            connection.SendCommand(command);
+            PLCCommand c = (PLCCommand)Enum.Parse(typeof(PLCCommand), command.ToUpper());
+            connection.SendCommand(c);
         }
 
         public void Disconnect()

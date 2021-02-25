@@ -38,11 +38,11 @@ namespace PoC.Connection
         /// Sends the specified command to the TCP API.
         /// </summary>
         /// <param name="command">The command that will be sent to the API.</param>
-        public void SendCommand(string command)
+        public void SendCommand(PLCCommand command)
         {
             NetworkStream stream = commandSender.GetStream();
 
-            byte[] data = Encoding.ASCII.GetBytes(command);
+            byte[] data = Encoding.ASCII.GetBytes(command.ToString().ToLower());
 
             stream.Write(data, 0, data.Length);
         }
@@ -95,7 +95,7 @@ namespace PoC.Connection
         /// </summary>
         internal void Disconnect()
         {
-            this.SendCommand("disconnet");
+            this.SendCommand(PLCCommand.DISCONNECT);
             if (this.listener != null && this.listener.Connected)
             {
                 Console.WriteLine("Closing down the listener");
@@ -124,7 +124,7 @@ namespace PoC.Connection
             if (this.commandSender != null && this.commandSender.Connected)
             {
                 Console.WriteLine("Closing down the comman sender");
-                this.SendCommand("disconnect");
+                this.SendCommand(PLCCommand.DISCONNECT);
                 this.commandSender.GetStream().Close();
                 this.commandSender.Close();
             }
