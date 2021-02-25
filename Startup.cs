@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PoC.Connection;
+using PoC.Connection.Implementation;
+using PoC.Connection.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +32,8 @@ namespace PoC
         {
             services.AddControllersWithViews();
 
-            services.AddSingleton<APIConnection, APIConnection>();
+            services.AddSingleton<ICommandSender, CommandSender>();
+            services.AddSingleton<IDataListener, DataListener>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +61,7 @@ namespace PoC
 
             using var scope = app.ApplicationServices.CreateScope();
             var services = scope.ServiceProvider;
-            var connection = services.GetService<APIConnection>();
+            var connection = services.GetService<IDataListener>();
         
 
             app.Use(async (context, next) => {

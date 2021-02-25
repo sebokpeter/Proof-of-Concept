@@ -8,6 +8,13 @@ const homeUrl = window.location.href + "home/command";
 
 const disconnectUrl = "home/disconnect"
 
+const commands = {
+    START: "START",
+    RESET: "RESET",
+    ARRIVING: "ARRIVING",
+    LEAVING: "LEAVING"
+}
+
 var socket;
 
 var scheme = document.location.protocol === "https:" ? "wss" : "ws";
@@ -20,19 +27,19 @@ var textArea = document.getElementById("plcData");
 window.onload = createSocket();
 
 function startClicked() {
-    sendCommandToController("start");
+    sendCommandToController(commands.START);
 }
 
 function resetClicked() {
-    sendCommandToController("reset");
+    sendCommandToController(commands.RESET);
 }
 
 function sasClicked() {
-    sendCommandToController("arriving");
+    sendCommandToController(commands.ARRIVING);
 }
 
 function slsClicked() {
-    sendCommandToController("leaving");
+    sendCommandToController(commands.LEAVING);
 }
 
 function disconnectClicked() {

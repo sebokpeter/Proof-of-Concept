@@ -7,17 +7,18 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using PoC.Connection;
+using PoC.Connection.Interfaces;
 
 namespace PoC.Controllers
 {
     public class HomeController : Controller
     {
-       private readonly APIConnection connection;
+       private readonly ICommandSender commandSender;
 
 
-        public HomeController(APIConnection connection)
+        public HomeController(ICommandSender sender)
         {
-            this.connection = connection;
+            this.commandSender = sender;
         }
 
         public IActionResult Index()
@@ -27,13 +28,13 @@ namespace PoC.Controllers
 
         public void Command([FromQuery]string command)
         {
-            PLCCommand c = (PLCCommand)Enum.Parse(typeof(PLCCommand), command.ToUpper());
-            connection.SendCommand(c);
+            PLCCommand c = (PLCCommand)Enum.Parse(typeof(PLCCommand), command);
+            commandSender.SendCommand(c);
         }
 
         public void Disconnect()
         {
-            connection.Disconnect();
+            commandSender.Disconnect();
         }
     }
 }
